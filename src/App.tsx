@@ -1,7 +1,10 @@
 import React from 'react';
 import styled, {createGlobalStyle} from 'styled-components';
+import {Link} from 'react-router-dom';
 
 import logo from './logo.svg';
+import {Path} from './routes';
+
 
 /**
  * @return {React.FC}
@@ -23,6 +26,10 @@ const App: React.FC = () => {
           >
             Learn React
           </OfficialLink>
+
+          <RoutingSampleLink to={Path.routingSample}>
+            This page is routing sample.
+          </RoutingSampleLink> */
         </Header>
       </Wrapper>
     </>
@@ -72,5 +79,9 @@ const Text = styled.p``;
 
 const CodeText = styled.code``;
 
+const RoutingSampleLink = styled(Link)`
+  color: #fff;
+  margin-top: 30px;
+`;
 
 export default App;
