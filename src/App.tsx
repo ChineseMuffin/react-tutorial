@@ -27,9 +27,9 @@ const App: React.FC = () => {
             Learn React
           </OfficialLink>
 
-          <RoutingSampleLink to={Path.routingSample}>
-            This page is routing sample.
-          </RoutingSampleLink> */
+          <SampleComponentLink to={Path.sampleComponent}>
+            Sample Component
+          </SampleComponentLink>
         </Header>
       </Wrapper>
     </>
@@ -79,7 +79,7 @@ const Text = styled.p``;
 
 const CodeText = styled.code``;
 
-const RoutingSampleLink = styled(Link)`
+const SampleComponentLink = styled(Link)`
   color: #fff;
   margin-top: 30px;
 `;
