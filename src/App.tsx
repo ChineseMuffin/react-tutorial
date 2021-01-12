@@ -3,6 +3,7 @@ import styled, {createGlobalStyle} from 'styled-components';
 import {Link} from 'react-router-dom';
 
 import logo from './logo.svg';
+// FIXME: circular dependency
 import {Path} from './routes';
 
 
