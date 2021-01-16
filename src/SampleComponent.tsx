@@ -7,26 +7,35 @@ const searchGoogleBooks = async (searchString: string) => {
   const params = {q: searchString};
   try {
     const reponse = await axios.get(url, {params});
-    return {isSuccess: true, data: reponse.data, error: null};
+    return {data: reponse.data};
   } catch (error) {
-    return {isScucess: false, data: null};
+    // TODO: いい感じにエラーハンドリングする
+    throw error;
   }
 };
 
 export const SampleComponent: React.FC = () => {
   const [searchString, changeSearchString] = useState('');
+  // TODO: 型を限定する
+  const [searchResult, changeSearchResult] = useState<any>(null);
 
   const handleOnSearchButton =
     async (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
       // buttonのsubmitを止める
       event.preventDefault();
-      return await searchGoogleBooks(searchString);
+
+      try {
+        const result = await searchGoogleBooks(searchString);
+        changeSearchResult(result.data);
+      } catch (error) {
+        window.alert(String(error));
+      }
     };
 
   return (
     <Wrapper>
       <Body>
-        <Title>Sample Component</Title>
+        <Title>Google Books 検索</Title>
         <SearchForm>
 
           <Input
@@ -39,6 +48,19 @@ export const SampleComponent: React.FC = () => {
             検索
           </SearchButton>
         </SearchForm>
+
+        {searchResult && (
+          <ResultContent>
+            {/* TODO: 結果が0件の場合エラーになる問題の対処 */}
+            {searchResult.items.map((item: any) => {
+              return (
+                <ResultTitle key={item.id}>
+                  {item.volumeInfo.title}
+                </ResultTitle>
+              );
+            })}
+          </ResultContent>
+        )}
       </Body>
     </Wrapper>
   );
@@ -83,11 +105,24 @@ const SearchButton = styled.button`
   font-size: 18px;
   border: none;
   outline: none;
+  /* disabledが切り替わり、background-colorが変わり切るまでの時間 */
   transition: 0.4s;
   cursor: pointer;
   /* button:disabledと同様に扱われる */
   &:disabled {
     background-color: #bfbfbf;
     cursor: not-allowed;
+  }
+`;
+
+const ResultContent = styled.div`
+  margin-top: 20px;
+`;
+
+const ResultTitle = styled.div`
+  padding: 10px 0;
+  border-bottom: 1px solid;
+  &:first-of-type {
+    border-top: 1px solid;
   }
 `;
