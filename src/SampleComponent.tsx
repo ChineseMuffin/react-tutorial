@@ -1,13 +1,32 @@
 import React, {useState} from 'react';
 import styled from 'styled-components';
-import axios from 'axios';
+import axios, {AxiosResponse} from 'axios';
 
+interface SearchResult{
+  kind: string,
+  items?: {
+    kind: string,
+    id: string,
+    etag: string,
+    // can not use interface Url?
+    selfLink: string,
+    volumeInfo: {
+      title: string,
+      authors: string[],
+    },
+  }[],
+  totalItems: number,
+};
+
+// TODO: move this to another module
+// 関数にasyncキーワードを付けると、関数がPromiseを返すようになる
 const searchGoogleBooks = async (searchString: string) => {
   const url = 'https://www.googleapis.com/books/v1/volumes';
   const params = {q: searchString};
   try {
-    const reponse = await axios.get(url, {params});
-    return {data: reponse.data};
+    const response: AxiosResponse<SearchResult> =
+      await axios.get(url, {params});
+    return response;
   } catch (error) {
     // TODO: いい感じにエラーハンドリングする
     throw error;
@@ -15,9 +34,9 @@ const searchGoogleBooks = async (searchString: string) => {
 };
 
 export const SampleComponent: React.FC = () => {
-  const [searchString, changeSearchString] = useState('');
-  // TODO: 型を限定する
-  const [searchResult, changeSearchResult] = useState<any>(null);
+  const [searchString, changeSearchString] = useState<string>('');
+  const [searchResult, changeSearchResult] =
+    useState<SearchResult | null>(null);
 
   const handleOnSearchButton =
     async (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
@@ -49,9 +68,8 @@ export const SampleComponent: React.FC = () => {
           </SearchButton>
         </SearchForm>
 
-        {searchResult && (
+        {searchResult?.items && (
           <ResultContent>
-            {/* TODO: 結果が0件の場合エラーになる問題の対処 */}
             {searchResult.items.map((item: any) => {
               return (
                 <ResultTitle key={item.id}>
