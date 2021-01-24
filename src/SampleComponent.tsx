@@ -2,21 +2,7 @@ import React, {useState} from 'react';
 import styled from 'styled-components';
 import axios, {AxiosResponse} from 'axios';
 
-interface SearchResult{
-  kind: string,
-  items?: {
-    kind: string,
-    id: string,
-    etag: string,
-    // can not use interface Url?
-    selfLink: string,
-    volumeInfo: {
-      title: string,
-      authors: string[],
-    },
-  }[],
-  totalItems: number,
-};
+import {VolumeList} from './models/Volume';
 
 // TODO: move this to another module
 // 関数にasyncキーワードを付けると、関数がPromiseを返すようになる
@@ -24,7 +10,7 @@ const searchGoogleBooks = async (searchString: string) => {
   const url = 'https://www.googleapis.com/books/v1/volumes';
   const params = {q: searchString};
   try {
-    const response: AxiosResponse<SearchResult> =
+    const response: AxiosResponse<VolumeList> =
       await axios.get(url, {params});
     return response;
   } catch (error) {
@@ -36,7 +22,7 @@ const searchGoogleBooks = async (searchString: string) => {
 export const SampleComponent: React.FC = () => {
   const [searchString, changeSearchString] = useState<string>('');
   const [searchResult, changeSearchResult] =
-    useState<SearchResult | null>(null);
+    useState<VolumeList>(new VolumeList());
 
   const handleOnSearchButton =
     async (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
